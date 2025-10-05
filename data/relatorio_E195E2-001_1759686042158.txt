@@ -1,0 +1,63 @@
+
+===================================================
+RELATÓRIO FINAL DE ENTREGA - AERONAVE E195E2-001
+===================================================
+Cliente: Cliente Aviação Brasil
+Data de Entrega: 2025-10-30
+
+
+=============================================
+DETALHES DA AERONAVE: E195E2-001
+=============================================
+Modelo: E-195-E2
+Tipo: COMERCIAL
+Capacidade: 146 passageiros
+Alcance: 4800 km
+
+--- PECAS UTILIZADAS (2) ---
+
+Nome: Motor LEAP-1B
+Tipo: IMPORTADA
+Fornecedor: GE Aviation
+Status: EM_PRODUCAO
+---
+
+Nome: Trem de Pouso Principal
+Tipo: NACIONAL
+Fornecedor: Aero-Nac
+Status: EM_PRODUCAO
+
+--- ETAPAS DE PRODUÇÃO (3) ---
+
+Etapa: Montagem Fuselagem
+Prazo: 20 dias
+Status: CONCLUIDA
+Funcionários: 2
+---
+
+Etapa: Instalação das Asas
+Prazo: 15 dias
+Status: CONCLUIDA
+Funcionários: 0
+---
+
+Etapa: Testes Finais e Certificação
+Prazo: 10 dias
+Status: CONCLUIDA
+Funcionários: 0
+
+--- TESTES DE QUALIDADE (1) ---
+
+Tipo de Teste: HIDRAULICO
+Resultado: REPROVADO
+
+
+===================================================
+STATUS GERAL DA PRODUÇÃO
+===================================================
+
+Testes Realizados: 1
+Testes Aprovados: 0
+Status da Qualidade: PENDENTE/FALHAS
+
+Etapas de Produção Concluídas: SIM

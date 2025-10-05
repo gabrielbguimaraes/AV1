@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs'; 
+import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { Aeronave } from './Aeronave.js';
 import { ResultadoTeste, StatusEtapa } from './enums.js';
 
@@ -48,11 +48,14 @@ Etapas de Produção Concluídas: ${etapasConcluidas ? 'SIM' : 'NÃO'}\n`;
 
     public salvarRelatorio(): string {
         const conteudo = this.gerarConteudo();
-        const nomeArquivo = `../data/relatorio_${this._aeronave.codigo}_${Date.now()}.txt`;
+        const nomeArquivo = `./data/relatorio_${this._aeronave.codigo}_${Date.now()}.txt`;
         
         try {
-
-            writeFileSync(nomeArquivo, conteudo, 'utf-8'); 
+            const dir = './data';
+            if (!existsSync(dir)){
+                mkdirSync(dir, { recursive: true });
+            }
+            writeFileSync(nomeArquivo, conteudo, 'utf-8');
             console.log(`Relatório salvo com sucesso em: ${nomeArquivo}`);
             return nomeArquivo;
         } catch (error) {

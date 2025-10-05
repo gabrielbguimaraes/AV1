@@ -1,13 +1,7 @@
-import { writeFileSync, readFileSync } from 'node:fs'; 
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { Aeronave } from './Aeronave.js';
-import { Funcionario } from './Funcionario.js'; 
-import { Etapa } from './Etapa.js';
-import { Peca } from './Peca.js';
-import { Teste } from './Teste.js';
-import { NivelPermissao, TipoAeronave } from './enums.js';
 
-
-const ARQUIVO_DADOS = '../data/aeronaves.json'; 
+const ARQUIVO_DADOS = './data/aeronaves.json';
 
 export class AeronaveManager {
     private aeronaves: Aeronave[] = [];
@@ -21,15 +15,18 @@ export class AeronaveManager {
             return {
                 codigo: aeronave.codigo,
                 modelo: aeronave.modelo,
-
             };
         });
     }
 
     public salvarDados(): void {
         try {
+            const dir = './data';
+            if (!existsSync(dir)){
+                mkdirSync(dir, { recursive: true });
+            }
             const data = JSON.stringify(this.aeronaves, null, 2);
-            writeFileSync(ARQUIVO_DADOS, data, 'utf-8'); 
+            writeFileSync(ARQUIVO_DADOS, data, 'utf-8');
             console.log(`\n[PERSISTÊNCIA] Dados de ${this.aeronaves.length} aeronaves salvos com sucesso.`);
         } catch (error) {
             console.error(`\n[PERSISTÊNCIA] Erro ao salvar dados: ${error}`);
@@ -48,7 +45,7 @@ export class AeronaveManager {
             if (error.code === 'ENOENT') {
                 console.log('\n[PERSISTÊNCIA] Arquivo de dados não encontrado. Iniciando com dados vazios.');
             } else {
-                console.error(`\n[PERSISTÊNCIA] Erro ao carregar dados: ${error.message}`); 
+                console.error(`\n[PERSISTÊNCIA] Erro ao carregar dados: ${error.message}`);
             }
         }
     }

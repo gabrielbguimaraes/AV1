@@ -9,19 +9,15 @@ import { TipoAeronave, NivelPermissao, TipoPeca, StatusPeca, TipoTeste, Resultad
 
 const manager = new AeronaveManager();
 
-
 const funcionarioAdmin = new Funcionario(1, 'Ozires Silva', '11988887777', 'Rua Principal, 100', 'admin', '123', NivelPermissao.ADMINISTRADOR);
 const funcionarioEng = new Funcionario(2, 'Bartolomeu Gusmão', '11977776666', 'Rua do CTO, 50', 'eng', '456', NivelPermissao.ENGENHEIRO);
 
 const FFUNCIONARIOS: Funcionario[] = [funcionarioAdmin, funcionarioEng];
 
-
-
 function simularFluxoProducao() {
     console.log("\n==============================================");
     console.log("=== SIMULAÇÃO DE PRODUÇÃO: E-195-E2 ===");
     console.log("==============================================\n");
-
 
     const e195 = new Aeronave(
         'E195E2-001',
@@ -31,7 +27,6 @@ function simularFluxoProducao() {
         4800
     );
     manager.adicionarAeronave(e195);
-
 
     const etapaFus = new Etapa('Montagem Fuselagem', '20 dias');
     const etapaAsas = new Etapa('Instalação das Asas', '15 dias');
@@ -46,16 +41,12 @@ function simularFluxoProducao() {
     e195.adicionarPeca(pecaMotor);
     e195.adicionarPeca(pecaTremPouso);
 
-
     console.log("\n--- Execução das Etapas ---");
-
-    e195.iniciarEtapa('Instalação das Asas');
-
 
     console.log("\n-> Iniciando 1ª Etapa (Montagem Fuselagem)");
     e195.iniciarEtapa('Montagem Fuselagem');
     etapaFus.associarFuncionario(funcionarioEng);
-    etapaFus.associarFuncionario(funcionarioAdmin); 
+    etapaFus.associarFuncionario(funcionarioAdmin);
     etapaFus.listarFuncionarios();
     e195.finalizarEtapa('Montagem Fuselagem');
 
@@ -79,22 +70,19 @@ function simularFluxoProducao() {
     manager.salvarDados();
 }
 
-
 function main() {
     console.log("==============================================");
     console.log("       BEM-VINDO ao AEROCÓDE - CLI v1.0       ");
     console.log("==============================================");
     
-    // Simulação de login:
-    const usuarioCLI = 'admin'; // Simulação de entrada do usuário
-    const senhaCLI = '123';     // Simulação de entrada da senha
+    const usuarioCLI = 'admin';
+    const senhaCLI = '123';
 
     const usuarioLogado = FFUNCIONARIOS.find(f => f.usuario === usuarioCLI);
     
     if (usuarioLogado && usuarioLogado.autenticar(usuarioCLI, senhaCLI)) {
         console.log(`\nAutenticação bem-sucedida! Usuário: ${usuarioLogado.nome} (Nível: ${usuarioLogado.nivelPermissao})\n`);
         
-
         if (usuarioLogado.nivelPermissao === NivelPermissao.ADMINISTRADOR) {
             simularFluxoProducao();
         } else {

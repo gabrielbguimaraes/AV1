@@ -1,6 +1,6 @@
-import { writeFileSync, readFileSync } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { Aeronave } from './Aeronave.js';
-const ARQUIVO_DADOS = '../data/aeronaves.json';
+const ARQUIVO_DADOS = './data/aeronaves.json';
 export class AeronaveManager {
     constructor() {
         this.aeronaves = [];
@@ -16,6 +16,10 @@ export class AeronaveManager {
     }
     salvarDados() {
         try {
+            const dir = './data';
+            if (!existsSync(dir)) {
+                mkdirSync(dir, { recursive: true });
+            }
             const data = JSON.stringify(this.aeronaves, null, 2);
             writeFileSync(ARQUIVO_DADOS, data, 'utf-8');
             console.log(`\n[PERSISTÊNCIA] Dados de ${this.aeronaves.length} aeronaves salvos com sucesso.`);
