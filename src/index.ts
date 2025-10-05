@@ -7,11 +7,12 @@ import { TipoAeronave } from './enums.js';
 
 const aeronaveManager = new AeronaveManager();
 const funcionarioManager = new FuncionarioManager();
-
+// leitura da cli
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
 
 
 function perguntar(query: string): Promise<string> {
@@ -61,7 +62,7 @@ async function verDetalhesAeronave() {
 
     menuPrincipal();
 }
-
+// chama os metodos pra reter os dados do input da aeronave
 function sair() {
     console.log("\nSalvando todos os dados...");
     aeronaveManager.salvarDados();
@@ -69,8 +70,6 @@ function sair() {
     console.log("Dados salvos. Adeus!");
     rl.close();
 }
-
-// --- MENU PRINCIPAL ---
 
 function menuPrincipal() {
     console.log("\n===== AEROCODE CLI - MENU PRINCIPAL =====");
@@ -104,5 +103,6 @@ function main() {
     console.log("==============================================");
     menuPrincipal();
 }
+// o login do usuário é obtido pelo json na pasta /data
 
 main();
