@@ -43,8 +43,7 @@ Endereço: ${this._endereco}
 Usuário: ${this._usuario}
 Permissão: ${this._nivelPermissao}`;
     }
-    
-    // ADICIONE ESTE MÉTODO
+
     public toJSON() {
         return {
             id: this._id,
