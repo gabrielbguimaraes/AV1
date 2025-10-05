@@ -1,59 +1,46 @@
-import { writeFileSync, readFileSync } from 'node:fs'; 
+import { writeFileSync, readFileSync } from 'node:fs';
 import { Aeronave } from './Aeronave.js';
-import { Funcionario } from './Funcionario.js'; 
-import { Etapa } from './Etapa.js';
-import { Peca } from './Peca.js';
-import { Teste } from './Teste.js';
-import { NivelPermissao, TipoAeronave } from './enums.js';
-
-
-const ARQUIVO_DADOS = '../data/aeronaves.json'; 
-
+const ARQUIVO_DADOS = '../data/aeronaves.json';
 export class AeronaveManager {
-    private aeronaves: Aeronave[] = [];
-
     constructor() {
+        this.aeronaves = [];
         this.carregarDados();
     }
-
-    private toSerializableObject(): any {
+    toSerializableObject() {
         return this.aeronaves.map(aeronave => {
             return {
                 codigo: aeronave.codigo,
                 modelo: aeronave.modelo,
-
             };
         });
     }
-
-    public salvarDados(): void {
+    salvarDados() {
         try {
             const data = JSON.stringify(this.aeronaves, null, 2);
-            writeFileSync(ARQUIVO_DADOS, data, 'utf-8'); 
+            writeFileSync(ARQUIVO_DADOS, data, 'utf-8');
             console.log(`\n[PERSISTÊNCIA] Dados de ${this.aeronaves.length} aeronaves salvos com sucesso.`);
-        } catch (error) {
+        }
+        catch (error) {
             console.error(`\n[PERSISTÊNCIA] Erro ao salvar dados: ${error}`);
         }
     }
-
-    public carregarDados(): void {
+    carregarDados() {
         try {
             const data = readFileSync(ARQUIVO_DADOS, 'utf-8');
             const dados = JSON.parse(data);
-            
-            this.aeronaves = dados.map((d: any) => new Aeronave(d.codigo, d.modelo, d.tipo, d.capacidade, d.alcance));
-
+            this.aeronaves = dados.map((d) => new Aeronave(d.codigo, d.modelo, d.tipo, d.capacidade, d.alcance));
             console.log(`\n[PERSISTÊNCIA] ${this.aeronaves.length} aeronaves carregadas.`);
-        } catch (error: any) {
+        }
+        catch (error) {
             if (error.code === 'ENOENT') {
                 console.log('\n[PERSISTÊNCIA] Arquivo de dados não encontrado. Iniciando com dados vazios.');
-            } else {
-                console.error(`\n[PERSISTÊNCIA] Erro ao carregar dados: ${error.message}`); 
+            }
+            else {
+                console.error(`\n[PERSISTÊNCIA] Erro ao carregar dados: ${error.message}`);
             }
         }
     }
-
-    public adicionarAeronave(aeronave: Aeronave): boolean {
+    adicionarAeronave(aeronave) {
         if (this.aeronaves.some(a => a.codigo === aeronave.codigo)) {
             console.error(`Erro: Aeronave com código ${aeronave.codigo} já existe.`);
             return false;
@@ -62,8 +49,8 @@ export class AeronaveManager {
         console.log(`Aeronave ${aeronave.codigo} cadastrada com sucesso.`);
         return true;
     }
-
-    public buscarAeronave(codigo: string): Aeronave | undefined {
+    buscarAeronave(codigo) {
         return this.aeronaves.find(a => a.codigo === codigo);
     }
 }
+//# sourceMappingURL=AeronaveManager.js.map
