@@ -1,3 +1,4 @@
+// src/Funcionario.ts
 export class Funcionario {
     constructor(id, nome, telefone, endereco, usuario, senha, nivelPermissao) {
         this._id = id;
@@ -20,6 +21,7 @@ Endereço: ${this._endereco}
 Usuário: ${this._usuario}
 Permissão: ${this._nivelPermissao}`;
     }
+    // ADICIONE ESTE MÉTODO
     toJSON() {
         return {
             id: this._id,

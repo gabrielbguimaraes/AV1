@@ -1,4 +1,4 @@
-
+// src/Funcionario.ts
 
 import { NivelPermissao } from './enums.js';
 import * as fs from 'fs';
@@ -44,7 +44,8 @@ Usuário: ${this._usuario}
 Permissão: ${this._nivelPermissao}`;
     }
     
-    private toJSON() {
+    // ADICIONE ESTE MÉTODO
+    public toJSON() {
         return {
             id: this._id,
             nome: this._nome,

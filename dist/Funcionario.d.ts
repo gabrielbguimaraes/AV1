@@ -10,7 +10,15 @@ export declare class Funcionario {
     constructor(id: number, nome: string, telefone: string, endereco: string, usuario: string, senha: string, nivelPermissao: NivelPermissao);
     autenticar(usuario: string, senha: string): boolean;
     detalhes(): string;
-    private toJSON;
+    toJSON(): {
+        id: number;
+        nome: string;
+        telefone: string;
+        endereco: string;
+        usuario: string;
+        senha: string;
+        nivelPermissao: NivelPermissao;
+    };
     salvar(): void;
     get id(): number;
     get nome(): string;

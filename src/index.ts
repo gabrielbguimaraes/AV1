@@ -6,15 +6,12 @@ import { Etapa } from './Etapa.js';
 import { Teste } from './Teste.js';
 import { Relatorio } from './Relatorio.js';
 import { TipoAeronave, NivelPermissao, TipoPeca, StatusPeca, TipoTeste, ResultadoTeste } from './enums.js';
+import { FuncionarioManager } from './FuncionarioManager.js';
 
-const manager = new AeronaveManager();
+const aeronaveManager = new AeronaveManager();
+const funcionarioManager = new FuncionarioManager();
 
-const funcionarioAdmin = new Funcionario(1, 'Ozires Silva', '11988887777', 'Rua Principal, 100', 'admin', '123', NivelPermissao.ADMINISTRADOR);
-const funcionarioEng = new Funcionario(2, 'Bartolomeu Gusmão', '11977776666', 'Rua do CTO, 50', 'eng', '456', NivelPermissao.ENGENHEIRO);
-
-const FFUNCIONARIOS: Funcionario[] = [funcionarioAdmin, funcionarioEng];
-
-function simularFluxoProducao() {
+function simularFluxoProducao(usuarioLogado: Funcionario) {
     console.log("\n==============================================");
     console.log("=== SIMULAÇÃO DE PRODUÇÃO: E-195-E2 ===");
     console.log("==============================================\n");
@@ -26,7 +23,7 @@ function simularFluxoProducao() {
         146,
         4800
     );
-    manager.adicionarAeronave(e195);
+    aeronaveManager.adicionarAeronave(e195);
 
     const etapaFus = new Etapa('Montagem Fuselagem', '20 dias');
     const etapaAsas = new Etapa('Instalação das Asas', '15 dias');
@@ -35,6 +32,10 @@ function simularFluxoProducao() {
     e195.adicionarEtapa(etapaFus);
     e195.adicionarEtapa(etapaAsas);
     e195.adicionarEtapa(etapaTestes);
+    
+    const todosFuncionarios = funcionarioManager.getTodosFuncionarios();
+    const funcionarioEng = todosFuncionarios.find(f => f.nivelPermissao === NivelPermissao.ENGENHEIRO);
+    const funcionarioAdmin = todosFuncionarios.find(f => f.nivelPermissao === NivelPermissao.ADMINISTRADOR);
 
     const pecaMotor = new Peca('Motor LEAP-1B', TipoPeca.IMPORTADA, 'GE Aviation');
     const pecaTremPouso = new Peca('Trem de Pouso Principal', TipoPeca.NACIONAL, 'Aero-Nac');
@@ -44,11 +45,15 @@ function simularFluxoProducao() {
     console.log("\n--- Execução das Etapas ---");
 
     console.log("\n-> Iniciando 1ª Etapa (Montagem Fuselagem)");
-    e195.iniciarEtapa('Montagem Fuselagem');
-    etapaFus.associarFuncionario(funcionarioEng);
-    etapaFus.associarFuncionario(funcionarioAdmin);
-    etapaFus.listarFuncionarios();
-    e195.finalizarEtapa('Montagem Fuselagem');
+    if (usuarioLogado.nivelPermissao === NivelPermissao.ADMINISTRADOR || usuarioLogado.nivelPermissao === NivelPermissao.ENGENHEIRO) {
+        e195.iniciarEtapa('Montagem Fuselagem');
+        if(funcionarioEng) etapaFus.associarFuncionario(funcionarioEng);
+        if(funcionarioAdmin) etapaFus.associarFuncionario(funcionarioAdmin);
+        etapaFus.listarFuncionarios();
+        e195.finalizarEtapa('Montagem Fuselagem');
+    } else {
+        console.log("Permissão negada para gerenciar etapas.");
+    }
 
     console.log("\n-> Iniciando 2ª Etapa (Instalação das Asas)");
     e195.iniciarEtapa('Instalação das Asas');
@@ -66,8 +71,6 @@ function simularFluxoProducao() {
     console.log("\n--- Relatório Final ---");
     const relatorio = new Relatorio(e195, 'Cliente Aviação Brasil', '2025-10-30');
     relatorio.salvarRelatorio();
-
-    manager.salvarDados();
 }
 
 function main() {
@@ -78,13 +81,13 @@ function main() {
     const usuarioCLI = 'admin';
     const senhaCLI = '123';
 
-    const usuarioLogado = FFUNCIONARIOS.find(f => f.usuario === usuarioCLI);
+    const usuarioLogado = funcionarioManager.buscarFuncionario(usuarioCLI);
     
     if (usuarioLogado && usuarioLogado.autenticar(usuarioCLI, senhaCLI)) {
         console.log(`\nAutenticação bem-sucedida! Usuário: ${usuarioLogado.nome} (Nível: ${usuarioLogado.nivelPermissao})\n`);
         
         if (usuarioLogado.nivelPermissao === NivelPermissao.ADMINISTRADOR) {
-            simularFluxoProducao();
+            simularFluxoProducao(usuarioLogado);
         } else {
             console.log(`Usuário ${usuarioLogado.nivelPermissao} logado, mas sem permissão para executar o fluxo de produção.`);
         }
@@ -92,6 +95,9 @@ function main() {
     } else {
         console.error("Falha na autenticação. Verifique usuário e senha.");
     }
+
+    funcionarioManager.salvarDados();
+    aeronaveManager.salvarDados();
 }
 
 main();
