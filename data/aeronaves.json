@@ -5,69 +5,18 @@
     "_testes": []
   },
   {
-    "_codigo": "E195E2-001",
-    "_modelo": "E-195-E2",
+    "_pecas": [],
+    "_etapas": [],
+    "_testes": []
+  },
+  {
+    "_codigo": "AV-001",
+    "_modelo": "Embraer E195-E2",
     "_tipo": "COMERCIAL",
     "_capacidade": 146,
     "_alcance": 4800,
-    "_pecas": [
-      {
-        "_nome": "Motor LEAP-1B",
-        "_tipo": "IMPORTADA",
-        "_fornecedor": "GE Aviation",
-        "_status": "EM_PRODUCAO"
-      },
-      {
-        "_nome": "Trem de Pouso Principal",
-        "_tipo": "NACIONAL",
-        "_fornecedor": "Aero-Nac",
-        "_status": "EM_PRODUCAO"
-      }
-    ],
-    "_etapas": [
-      {
-        "_nome": "Montagem Fuselagem",
-        "_prazo": "20 dias",
-        "_status": "CONCLUIDA",
-        "_funcionarios": [
-          {
-            "id": 2,
-            "nome": "Bartolomeu Gusmão",
-            "telefone": "11977776666",
-            "endereco": "Rua do CTO, 50",
-            "usuario": "eng",
-            "senha": "456",
-            "nivelPermissao": "ENGENHEIRO"
-          },
-          {
-            "id": 1,
-            "nome": "Ozires Silva",
-            "telefone": "11988887777",
-            "endereco": "Rua Principal, 100",
-            "usuario": "admin",
-            "senha": "123",
-            "nivelPermissao": "ADMINISTRADOR"
-          }
-        ]
-      },
-      {
-        "_nome": "Instalação das Asas",
-        "_prazo": "15 dias",
-        "_status": "CONCLUIDA",
-        "_funcionarios": []
-      },
-      {
-        "_nome": "Testes Finais e Certificação",
-        "_prazo": "10 dias",
-        "_status": "CONCLUIDA",
-        "_funcionarios": []
-      }
-    ],
-    "_testes": [
-      {
-        "_tipo": "HIDRAULICO",
-        "_resultado": "REPROVADO"
-      }
-    ]
+    "_pecas": [],
+    "_etapas": [],
+    "_testes": []
   }
 ]

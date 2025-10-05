@@ -1,80 +1,87 @@
+import * as readline from 'readline';
 import { AeronaveManager } from './AeronaveManager.js';
-import { Aeronave } from './Aeronave.js';
-import { Peca } from './Peca.js';
-import { Etapa } from './Etapa.js';
-import { Teste } from './Teste.js';
-import { Relatorio } from './Relatorio.js';
-import { TipoAeronave, NivelPermissao, TipoPeca, TipoTeste, ResultadoTeste } from './enums.js';
 import { FuncionarioManager } from './FuncionarioManager.js';
+import { Aeronave } from './Aeronave.js';
 const aeronaveManager = new AeronaveManager();
 const funcionarioManager = new FuncionarioManager();
-function simularFluxoProducao(usuarioLogado) {
-    console.log("\n==============================================");
-    console.log("=== SIMULAÇÃO DE PRODUÇÃO: E-195-E2 ===");
-    console.log("==============================================\n");
-    const e195 = new Aeronave('E195E2-001', 'E-195-E2', TipoAeronave.COMERCIAL, 146, 4800);
-    aeronaveManager.adicionarAeronave(e195);
-    const etapaFus = new Etapa('Montagem Fuselagem', '20 dias');
-    const etapaAsas = new Etapa('Instalação das Asas', '15 dias');
-    const etapaTestes = new Etapa('Testes Finais e Certificação', '10 dias');
-    e195.adicionarEtapa(etapaFus);
-    e195.adicionarEtapa(etapaAsas);
-    e195.adicionarEtapa(etapaTestes);
-    const todosFuncionarios = funcionarioManager.getTodosFuncionarios();
-    const funcionarioEng = todosFuncionarios.find(f => f.nivelPermissao === NivelPermissao.ENGENHEIRO);
-    const funcionarioAdmin = todosFuncionarios.find(f => f.nivelPermissao === NivelPermissao.ADMINISTRADOR);
-    const pecaMotor = new Peca('Motor LEAP-1B', TipoPeca.IMPORTADA, 'GE Aviation');
-    const pecaTremPouso = new Peca('Trem de Pouso Principal', TipoPeca.NACIONAL, 'Aero-Nac');
-    e195.adicionarPeca(pecaMotor);
-    e195.adicionarPeca(pecaTremPouso);
-    console.log("\n--- Execução das Etapas ---");
-    console.log("\n-> Iniciando 1ª Etapa (Montagem Fuselagem)");
-    if (usuarioLogado.nivelPermissao === NivelPermissao.ADMINISTRADOR || usuarioLogado.nivelPermissao === NivelPermissao.ENGENHEIRO) {
-        e195.iniciarEtapa('Montagem Fuselagem');
-        if (funcionarioEng)
-            etapaFus.associarFuncionario(funcionarioEng);
-        if (funcionarioAdmin)
-            etapaFus.associarFuncionario(funcionarioAdmin);
-        etapaFus.listarFuncionarios();
-        e195.finalizarEtapa('Montagem Fuselagem');
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+function perguntar(query) {
+    return new Promise(resolve => rl.question(query, resolve));
+}
+async function criarNovaAeronave() {
+    console.log("\n--- Cadastro de Nova Aeronave ---");
+    const codigo = await perguntar("Digite o código único da aeronave: ");
+    const modelo = await perguntar("Digite o modelo: ");
+    let tipoStr = "";
+    let tipoAeronave;
+    while (tipoStr.toUpperCase() !== 'COMERCIAL' && tipoStr.toUpperCase() !== 'MILITAR') {
+        tipoStr = await perguntar("Digite o tipo (COMERCIAL ou MILITAR): ");
+    }
+    tipoAeronave = tipoStr.toUpperCase();
+    const capacidade = parseInt(await perguntar("Digite a capacidade de passageiros: "), 10);
+    const alcance = parseInt(await perguntar("Digite o alcance (km): "), 10);
+    if (isNaN(capacidade) || isNaN(alcance)) {
+        console.log("Capacidade e alcance devem ser números. Operação cancelada.");
+        menuPrincipal();
+        return;
+    }
+    const novaAeronave = new Aeronave(codigo, modelo, tipoAeronave, capacidade, alcance);
+    if (aeronaveManager.adicionarAeronave(novaAeronave)) {
+        console.log(`\nAeronave '${modelo}' com código '${codigo}' cadastrada com sucesso!`);
+    }
+    menuPrincipal();
+}
+async function verDetalhesAeronave() {
+    console.log("\n--- Detalhes da Aeronave ---");
+    const codigo = await perguntar("Digite o código da aeronave que deseja ver: ");
+    const aeronave = aeronaveManager.buscarAeronave(codigo);
+    if (aeronave) {
+        console.log(aeronave.detalhes());
     }
     else {
-        console.log("Permissão negada para gerenciar etapas.");
+        console.log(`\nAeronave com código '${codigo}' não encontrada.`);
     }
-    console.log("\n-> Iniciando 2ª Etapa (Instalação das Asas)");
-    e195.iniciarEtapa('Instalação das Asas');
-    e195.finalizarEtapa('Instalação das Asas');
-    console.log("\n-> Iniciando 3ª Etapa (Testes Finais)");
-    e195.iniciarEtapa('Testes Finais e Certificação');
-    const testeAero = new Teste(TipoTeste.AERODINAMICO, ResultadoTeste.APROVADO);
-    const testeHidro = new Teste(TipoTeste.HIDRAULICO, ResultadoTeste.REPROVADO);
-    e195.adicionarTeste(testeHidro);
-    e195.finalizarEtapa('Testes Finais e Certificação');
-    console.log("\n--- Relatório Final ---");
-    const relatorio = new Relatorio(e195, 'Cliente Aviação Brasil', '2025-10-30');
-    relatorio.salvarRelatorio();
+    menuPrincipal();
+}
+function sair() {
+    console.log("\nSalvando todos os dados...");
+    aeronaveManager.salvarDados();
+    funcionarioManager.salvarDados();
+    console.log("Dados salvos. Adeus!");
+    rl.close();
+}
+// --- MENU PRINCIPAL ---
+function menuPrincipal() {
+    console.log("\n===== AEROCODE CLI - MENU PRINCIPAL =====");
+    console.log("1. Criar Nova Aeronave");
+    console.log("2. Ver Detalhes de Aeronave");
+    console.log("3. Sair");
+    rl.question("Escolha uma opção: ", (opcao) => {
+        switch (opcao) {
+            case '1':
+                criarNovaAeronave();
+                break;
+            case '2':
+                verDetalhesAeronave();
+                break;
+            case '3':
+                sair();
+                break;
+            default:
+                console.log("Opção inválida, tente novamente.");
+                menuPrincipal();
+                break;
+        }
+    });
 }
 function main() {
     console.log("==============================================");
     console.log("       BEM-VINDO ao AEROCÓDE - CLI v1.0       ");
     console.log("==============================================");
-    const usuarioCLI = 'admin';
-    const senhaCLI = '123';
-    const usuarioLogado = funcionarioManager.buscarFuncionario(usuarioCLI);
-    if (usuarioLogado && usuarioLogado.autenticar(usuarioCLI, senhaCLI)) {
-        console.log(`\nAutenticação bem-sucedida! Usuário: ${usuarioLogado.nome} (Nível: ${usuarioLogado.nivelPermissao})\n`);
-        if (usuarioLogado.nivelPermissao === NivelPermissao.ADMINISTRADOR) {
-            simularFluxoProducao(usuarioLogado);
-        }
-        else {
-            console.log(`Usuário ${usuarioLogado.nivelPermissao} logado, mas sem permissão para executar o fluxo de produção.`);
-        }
-    }
-    else {
-        console.error("Falha na autenticação. Verifique usuário e senha.");
-    }
-    funcionarioManager.salvarDados();
-    aeronaveManager.salvarDados();
+    menuPrincipal();
 }
 main();
 //# sourceMappingURL=index.js.map
