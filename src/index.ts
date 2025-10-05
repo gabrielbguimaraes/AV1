@@ -13,7 +13,7 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-
+// caso você não tenha nenhum usuário setado num json ele irá chamar a função de carregarPadrao() para autenticar como 2 usuários já setados (Ozires Silva e Bartolomeu Gusmão)
 
 function perguntar(query: string): Promise<string> {
     return new Promise(resolve => rl.question(query, resolve));
@@ -106,3 +106,4 @@ function main() {
 // o login do usuário é obtido pelo json na pasta /data
 
 main();
+
